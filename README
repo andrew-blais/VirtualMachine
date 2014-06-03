@@ -1,0 +1,689 @@
+		README
+
+Copyright 2014 by Andrew L. Blais.
+This program is distributed under the terms of the GNU 
+General Public License version 3.
+
+
+		THE MACHINES
+
+Virtual Machine is a re-implementation of Virtual Harry, 
+which is itself an implementation of Harry Porter's relay 
+computer, which I sometimes refer to as the relay Harry. 
+
+See web.cecs.pdx.edu/~harry/Relay/ for the relay Harry.
+
+See https://github.com/andrew-blais/VirtualHarry for the 
+Virtual Harry.
+
+Virtual Harry is a work of conceptual art, as is Virtual 
+Machine. They both explore the platitude that at bottom, 
+computers as just zeros and ones. VH was initially written 
+in javascript. That was too hard. Javascript is complicated 
+and so is the relay Harry. Something had to give. Python is 
+a very easy language in which to explore complicated 
+conceptual structures. After having put the javascript 
+version away for some time, maybe a year or so, I picked up 
+Harry Porter's esay about the relay Harry. You can find it 
+here:
+
+http://web.cecs.pdx.edu/~harry/Relay/RelayPaper.htm
+
+The relay Harry has two sides. One is the relays. The other 
+is the conceptual structure that the relays implement. It 
+was important to see this, because part of the relay Harry 
+is a mechanism that resolves a problem that is due to the 
+fact that relays take time to switch on and off. This part 
+ensures that the relays are switched on just long enough to 
+ensure that data or electrical signals can be successfully 
+conveyed from one place to another, but also just long 
+enough that they do not interfere with other signals. As it 
+turns out, this part of the relay Harry is independent of 
+the conceptual structure that the relays implement. That 
+this should be so is evident upon thinking that this 
+structure is not only implementable in relays, but also 
+transisitors and other mechanisms. The relay Harry and both 
+Virtual Harry and Virtual Machine are mechanisms that (1) 
+move zeros and ones and (2) occasionally perform logical or 
+simple arithmetic operations on these zeros and ones. 
+Instead of thinking of these movements and operations as 
+being implemented by relays or some other mechanism, they 
+can also be thought of as being moved about by somewhat 
+clever winged monkeys. The movement of the zeros and ones, 
+or non-flows and flows of electric current, from one bank 
+or register of relays to another is one way to think of the 
+underlying conceptual structure. V. Harry and V. Machine 
+were conceived as mechanism that move zeros and ones from 
+Python lists and that occasionally perform some simple 
+logical and arithmetic operations on these.
+
+		THE GUI: WHAT YOU ARE SEEING
+
+The GUI interface to V. Harry was to complicated. It was 
+the result of pulling together a number of different 
+interfaces. V. Machine lays out the gui interface in a more
+integrated manner. (There is a new virtual machine in the 
+works, Virtual Invention, which will have a command line 
+interface that minimizes the role of buttons to initiate 
+events.) 
+
+Unlike Virtual Harry, which is spread out over more than a 
+dozen modules, Virtual Machine is organized into just four 
+modules. 
+
+(1)     model.py -- implements the underlying conceptual 
+			structure
+(2)      view.py -- implements the gui interface to the 
+			conceptual structure 
+(3)   control.py -- bridges the model and the view
+(4) constants.py -- various constants and functions used by 
+			model.py, view.py and control.py
+
+Before the GUI can make sense, it is necessary to 
+understand the overall structure of a computer like the 
+relay Harry. An essential element of the relay Harry, VH 
+and VM is their registers. A register is like a series of 
+boxes. Like this:
+
+	[_][_][_][_][_][_][_][_]
+
+In each box, there is a zero or a one. Like this:
+
+	[1][0][1][0][1][1][1][0]
+
+This is an example of a eight bit register. Its content 
+corresponds to either a binary number (here, the binary for 
+174) or an instruction (here, the code to halt program) or 
+part of an address. Address?
+
+Yes, address. Of what? Of a space in a super register or 
+memory. The memory in the relay Harry was not implemented in 
+relays. The relay Harry uses a single CMOS Static RAM chip 
+in the Hitachi HM62256 Series. Here is a picture.
+
+http://web.cecs.pdx.edu/~harry/Relay/index-Images/1.jpg
+
+In effect, this chip has 2^15 or 32768 eight bit registers. 
+Each has an address that is a hexadecimal number between 
+0000 and 7FFF. My virtual machines implement this memory as 
+a Python dictionary whose keys are 15 bit binary python 
+tuples and whose values are 8 bit binary lists. 
+
+This is enough background to start making sense of what is 
+seen upon starting Virtual Machine. 
+
+		STARTING VIRTUAL MACHINE
+
+To start, V. Machine, good luck, if you're running M$. Under 
+Linux, assuming that you have Python installed, you simply 
+run:
+
+python3.2 control.py
+
+or the equivalent on the command line. 
+
+Future projects include putting together packages for Linux 
+and M$ that includes all the requisite Pythonic (what a 
+stupid, absolutely idiotic adjective) presuppositions. It 
+would be nice to have a similar thing for the Mac world.
+
+		WHAT IS ALL THAT STUFF?
+
+Supposing that you have V. Machine running, the left side of 
+the screen will have a representation of inner state of V. 
+Machine. The various registers are labeled A, B, C, D, M1, 
+M2, X, Y. Notice that M1 and M2 are collectively referred to 
+as M, and X and Y are referred to as XY. There are other 
+registers: J1, J2, PC1, and PC2.
+
+Two registers stand out as encircled in red. One is the Data 
+Bus and the other is the Address Bus. 
+
+The Data Bus is a portal into the machine. Clicking of its 
+buttons, which are initially labeled with zeros, changes the 
+state of the corresponding bit. Click on a zero, and its 
+changes the value in the Address Bus from zero to one, which
+is also reflected in a change in the button's label. 
+
+If the Data Bus is set to
+
+	[1][0][1][0][1][1][1][0],
+
+then pressing "load A" moves that series of zeros and ones 
+into the register labeled "A". The transfer can be seen in 
+the bank of zeros and ones just to the right of the "A" 
+label. Similarly for the B, C, etc, registers. On the other 
+hand, the "select" buttons move the contents of a register 
+to the Data Bus. As a binary list can be moved from the Data 
+Bus to the various registers, the binary lists in the 
+various registers can be moved to the Data Bus. One of the 
+more interesting things about the relay Harry and its 
+virtual counterparts is that a large part of what these 
+machines do simply consists of moving zeros and ones from 
+this to that place. Where, then, does the computing happen?
+
+In short, the arithmetic logic unit, the ALU. On the far 
+bottom left of the GUI, there is a column of register 
+representations. Ten stand out by virtue of their black 
+backgrounds and yellow foregrounds. The first two are the 
+"B" and "C" registers. They constitute the inputs to the 
+ALU. The eight possible outputs are represented by the next 
+eight registers that also have black backgrounds and yellow 
+foregrounds. (Except for "ADD", which is red. More to 
+come....) They are: 
+
+	ADD: the sum of B and C 
+	INC: the sum of B and 1 
+	AND: the conjunction of the bits of B and C 
+ 	 OR: the disjunction of the bits of B and C
+	XOR: the exclusive disjunction of the bits of B and C
+	NOT: the negation of the bits of B
+	SHL: the result of shifting the bits in B to the left, 
+		 i.e., B * 2
+	CLR: clears the Data Bus, i.e., sets it to zero
+
+To the immediate right of the ALU, there is an array of 
+buttons labeld "F0", "F1" and "F2". These select the 
+function. A change in function is represented by a change in 
+color of the representation of the ALU. The default function 
+is ADD, which is why it is initially red. 
+
+Suppose that you wanted to add 5 and 7. (This example is 
+from Kant, by the way.) Here is what you would do.
+
+	(1) Enter the binary 5, [0,0,0,0,0,1,0,1], into the 
+		Data Bus.
+	(2) Press "load B"
+	(3) Enter the binary 7, [0,0,0,0,0,1,1,1], into the 
+		Data Bus.
+	(4) Press "load C"
+	(5) Make sure that F0, F1 and F2 are all set to zero.
+	(6) You should see 12, [0,0,0,0,1,1,0,0], in or on the 
+		Data Bus.
+
+		HOW THE ALU ADDS
+
+The most mysterious part of this is how the ALU adds B and 
+C. This turns out to be relatively simple. 
+
+As with adding in any base, when adding two numbers, it is 
+necessary to keep track of two things. First, it is 
+necessary to keep track of the sum and it is necessary to 
+keep track of the carry. In the case of binary numbers, this 
+is relatively easy, since the sum and the carry are both 
+simple logical functions of the given inputs. A table shows 
+the pertinent functions:
+
+	CYin	B	C	CYout	Sum
+(1)	0	0	0	0	0
+(2)	0	0	1	0	1
+(3)	0	1	0	0	1
+(4)	0	1	1	1	0
+(5)	1	0	0	0	1
+(6)	1	0	1	1	0
+(7)	1	1	0	1	0
+(8)	1	1	1	1	1
+
+There are four lines where CYout is 1; lines 4, 6, 7, and 8. 
+(Where k stands for the carry-in.)
+
+For line 4, (not-k and not-b and c) is 1
+For line 6, (not-k and b and not-c) is 1
+For line 7, (k and not-b and not-c) is 1
+For line 8, (k and b and c) is 1
+
+Therefore, the carry out function is simply equivalent to 
+the disjunction of these four logical functions. The same is 
+true for the sum function except that the corresponding four
+lines are 2, 3, 5, and 8.
+
+For line 2, (not-k and b and c) is 1
+For line 3, (k and not-b and c) is 1
+For line 5, (k and b and not-c) is 1
+For line 8, (k and b and c) is 1
+        
+So, in a way similar to the case of the carry function, the 
+sum function is equivalent to a disjunction of four simple 
+logical functions. 
+
+		MEMORY
+
+	As already mentioned, the relay Harry, Virtual Harry 
+and Virtual Machine have 2^15 or 32768 eight bit registers. 
+In the relay Harry, this corresponds to a Hitachi HM62256 
+Series CMOS Static RAM chip. In both VH and VM, this 
+corresponds to a Python dictionary whose keys are "15 bit 
+binary" Python tuples and whose values are "8 bit binary" 
+lists. The "addresses" range from:
+
+	[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] 
+	
+to:
+	
+	[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1].
+
+The memory has a current address and a current memory 
+register that is referred to by this address. In addition 
+to the current memory address, there is the address bus and 
+its current value. The memory unit has five buttons.
+
+The button labeled "BusToMem" moves the value on the address 
+bus to the memory address. Clicking "BusToMem" not only 
+moves this value, but doing so sets the current memory to 
+the value pointed to by this value. 
+
+The button labeled "ReadMem" moves the value in current 
+memory to the Data Bus, and the button labeled "WriteMem" 
+moves the value in the Data Bus to current memory. They do 
+this relative to the current memory address, which again can 
+be set by setting the Address Bus and then clicking 
+"BusToMem".
+
+There are two further memory buttons. One is "RandomMem". 
+This fills all 32768 memory registers with random lists of 
+zeros and ones. This is useful for testing. The other memory 
+button is "ClearMem". This fills each memory register with 
+[0,0,0,0,0,0,0,0]. 
+
+		THE VIRTUAL MACHINE CODE
+		
+The allure of the relay Harry is that it is a computer 
+whose 0s and 1s are relatively transparent. It can be 
+programmed with 0s and 1s. Each command is a string of 8 to
+24 0s and 1s. There are eleven types of command. 
+
+The first command is MOV. This command moves the contents 
+of the A, B, C, D, M1, M2, X, and Y registers. As laid out 
+in the following table, the registers are named or referred
+to by a string of 0s and 1s. 
+
+(0,0,0) = A
+(0,0,1) = B
+(0,1,0) = C
+(0,1,1) = D
+(1,0,0) = M1
+(1,0,1) = M2
+(1,1,0) = X
+(1,1,1) = Y
+
+The command begins with [0,0] followed by some combination
+of six 0s and 1s. The first three will pick the source 
+register and the second three will pick the destination 
+register. So, for example, the eight bit string,
+
+[0,0,1,1,0,0,1,0]
+
+moves X (1,1,0) into C (0,1,0). 
+
+The second command is SETAB. This command sets either the A 
+register or the B register to the binary equivalent of a 
+value between -16 and 15. The command begins with [0,1] 
+followed by either a 0 or a 1. If 0, the next five 0s and 
+1s are moved to A. If 1, they are moved to B. 
+
+Here is a place where the conceptual art is manifest. If 
+computers are 0s and 1s, how are numbers like 5, 7 and 12 
+treated? Or, represented? Well, the answer to that is 
+relatively well known in binary numbers. Recall that SETAB
+moves a list of five 0s and 1s. 
+
+ 0 is 00000 and
+ 1 is 00001, but
+ 2 is 00010 and
+ 3 is 00011. Four?
+ 4 is 00100 and
+ 5 is 00101... and
+15 is 01111.
+
+That pattern is obvious, but what about the negative 
+numbers? The answer is in the idea of two's compliment. 
+
+ 15 is 01111...
+  3 is 00011
+  2 is 00010,
+  1 is 00001
+  0 is 00000
+ -1 is 11111
+ -2 is 11110...
+-16 is 10000,
+
+This one may not be obvious. The two's compliment of a 
+binary is what you get by substituting 0 for 1 and vice 
+versa. Let N be a negative number. The binary of N is the 
+two's compliment of N - 1. For example, the binary of -16 
+is the compliment of 15. So, when SETAB moves a negative 
+value into either A or B, this is what it is doing. 
+
+The third command is ALU. This is one of the two places 
+where Virtual Machine actually computes. The other is in 
+conditional branching, but more of this later. The 
+Arithmetic Logic Unit has three inputs sources. Two are the
+B and the C registers. The third is the three bits that make
+up the function register. These three bits choose which of
+the eight ALU functions gets sent to the Data Bus. These
+eight functions are mapped to three bit lists in a way that 
+is similar to the way the eight A, B, ..., X, and Y 
+registers are mapped to three bit lists.
+
+(0,0,0) = ADD (B plus C 
+(0,0,1) = INC (B plus 1
+(0,1,0) = AND (B and C
+(0,1,1) = OR  (B or C
+(1,0,0) = XOR (B xor C
+(1,0,1) = NOT (not B)
+(1,1,0) = SHL (shift B left 1)
+(1,1,1) = CLR (return 0)
+
+The ALU command begins with [1,0,0,0] and is followed by 
+either 0 or 1. If 0, the result is stored in A. If 1, it is 
+stored in D. The last three bits pick a function according
+to the above table. For example, the command to add B and C
+and send the result to the D register is:
+
+[1,0,0,0,1,0,0,0].
+
+For example, the command to shift the B register to the 
+left, that is, multiply is by 2, and send the result to the
+A register is:
+
+[1,0,0,0,0,1,1,0].
+
+The fourth command is LOAD. This command moves the content
+of the A, B, C, or D register to the location in memory 
+that is addressed by the contents of M register, that is,
+the M1 and M2 registers. Its first five bits are 
+[1,0,0,1,0] and its last two are determined by this table:
+
+(0,0) is A
+(0,1) is B
+(1,0) is C
+(1,1) is D
+
+The command to move C to the location in memory addressed 
+by M is:
+
+[1,0,0,1,0,0,1,0].
+
+Curiously,
+
+[1,0,0,1,0,1,1,0]
+
+does the same thing. Virtual Machine does not look at the 
+sixth place once it sees that the first five bits are
+[1,0,0,1,0]. So, the sixth place can be 0 or 1. 
+
+The fifth command is STORE and it is much like LOAD. This
+command moves the location in memory that is addressed by
+the contents of the M register, again M1 and M2, to one of 
+A, B, C, or D. Its first five bits are 
+
+[1,0,0,1,1] and its last two are determined by the table 
+just noted. The command to move the location in memory 
+addressed by M to C is:
+
+[1,0,0,1,1,0,1,0].
+
+Curiously,
+
+[1,0,0,1,1,1,1,0]
+
+does the same thing. Virtual Machine does not look at the 
+sixth place once it sees that the first five bits are
+[1,0,0,1,0]. So, the sixth place can be 0 or 1. There are a
+number of places where this kind of thing happens in the 
+virtual machine code of Virtual Machine. Idea for new 
+project: create a "machine" code where this doesn't happen.
+This needs a name. This is not ambiguity, since this is not
+a case in which one series of bits expresses two commands.
+This is a case in which two different series of bit express
+the same command. This is more like synonymy. The programs
+testSynonym0.pgm and testSynonymy1.pgm illustrate this
+phenomenon. 
+
+The sixth command, RET_MOV16, is three commands in one. To 
+see how this works, it is necessary to see the overall 
+structure of the running of a program. This will clarify, 
+finally, the role of the M, XY, J, INC, and PC registers, 
+all of which are a mysterious 16 bits wide. Running a 
+program involves three stages: fetching, incrementing and 
+executing.
+
+		FETCHING
+
+Fetching amounts to (1) moving the contents of PC to the 
+Address Bus, (2) moving the Address Bus to the Memory 
+Address, (3) moving the Memory at the Memory Address to the
+Data Bus, and (4) moving the Data Bus to the Instruction
+register. In effect, this is the complicated way that 
+Virtual Machine gets a command in a program in memory. 
+Notice that the first step involves the Program Counter. It
+keeps track of the Memory Address of the current command or
+instruction. 
+
+		INCREMENTING
+
+Incrementing is a booking keeping procedure. Initially, the
+PC register is a 16 bit zero. So, when PC is used to 
+initially address memory, it address the first register in
+the memory, which given the way that programs are loaded in 
+memory -- that is, first command first, second command 
+second, et cetera -- addresses the first command. So, 
+obviously, PC has to be incremented so that during the next
+cycle, it is the address of the next command. In order to 
+do this, Virtual Machine utilizes the IncrUnit and INC. 
+
+The IncrUnit register is defined by this fact: it is always
+equal to the Address Bus plus one. Any change in the Address
+Bus is automatically reflected by a change in IncrUnit and
+it will both have and show a value of the Address Bus plus 
+one. INC is a way to access the value of IncrUnit. Loading 
+INC gives it the value of IncrUnit, and selecting INC moves
+its value to the Address Bus. Notice that it is simple to
+update the Program Counter by just loading PC.
+
+So, in short, incrementing comes down to three steps. (1)
+Load the value of IncrUnit to INC, (2) select INC to the 
+Address Bus, and then (3) loading PC. 
+
+		EXECUTION and back....
+
+This brings us to the execution part of the command cycle. 
+This varies with each command, which brings us back to 
+RET_MOV16, the sixth command. Again, this command can do a 
+number of things. 
+
+One thing RET_MOV16 can do regulate the execution phase of 
+the run cycle. It is a command that regulates the execution
+of commands by setting the address the next instruction. 
+This is the RET part of the sixth command. This allows the 
+program to store an address in XY and then later RETurn to
+that address to execute the command stored there. It 
+returns to that address by moving XY to PC. 
+
+This brings us to another thing that the sixth command can 
+do, that is, the now often seen task of moving the contents
+of registers, but in this case, 16 bit registers.
+
+The syntax of the sixth command brings all of this together.
+The first four bits are [1,0,1,0]. 
+
+The fifth bit is either 0 or 1, which determines the 
+destination register. This is XY, if 0, and PC, if 1.
+
+There are four possible sixth and seventh bits. Three are 
+associated with 16 bit registers from which contents can be
+moved. These are:
+
+(0,0) = M
+(0,1) = XY
+(1,0) = J
+
+Yes, (1,1) is left out; more of this soon. For now, note 
+that the RETurn command, that is, the command to move XY to
+PC is this:
+
+[1,0,1,0,1,0,1,0].
+
+Again, there are two commands to do this, because the 
+Virtual Machine ignores the eight bit. The command to move
+M to XY is:
+
+[1,0,1,0,0,0,0,0].
+ 
+This leaves the last thing that the RET_MOV16 command can 
+do, that is, HALT the program, as elsewhere, there are two
+versions of this command. Let us say that the canonical one
+is:
+
+[1,0,1,0,1,1,1,0]. 
+
+In the relay Harry, because of the way that the relay 
+mechanism is works, halting sets PC to zero, and so does
+Virtual Machine and Virtual Harry. In the virtual machines,
+unlike updating PC, this serves no organizational or 
+functional purpose. It is pure, unadulterated aesthetics. 
+
+In short, RET_MOV16 does three things. (1) It HALTs a 
+program, which for aesthetic reasons sets PC to zero, (2) 
+it moves M, XY or J to XY or PC, but setting PC to XY, or 
+M or J for that matter, (3) regulates the execution of 
+commands. Specifically, the way to effect a RETurn to an
+address is by moving XY to PC. This is not part of my 
+design; it is a shadow cast from the relay Harry. It might 
+seem that this is another place where there are synonymous 
+commands, but this isn't quite it. This is a case where a 
+more macro level effect can be achieved via multiple micro
+level interventions. Conceptually, this illustrates how, 
+even at so fundamental a level as 0s and 1s, macro level
+phenomema do not necessitate a unique set of micro level 
+events that constitute them. RETuring can be effected by 
+moving M, XY or J to PC. HALTing and MOV16ing are similar.
+
+The relay Harry and its virtual descendants share an odd 
+characteristic to which I have already alluded, namely, that
+very little of what they do actually comes down to 
+calculating. In large part, they simply move bits. 
+
+In large part, they are systematized ways of reacting to
+the strings of 0s and 1s that make up their programs. In 
+this way, then, these machines are never, ever, "bare 
+metal". Not because some are virtual, but because 
+especially, in the case of the relay Harry, the metal has 
+to be organized in some way. A program is further 
+organization within an already existing organization. Metal
+without some such organization, whether as artifact or 
+random result, can't be a computer. Well, at least, I have 
+difficulty imagining it. The Program Counter is one pivotal 
+sub-mechanism. Another is IncrUnit. 
+
+		THE SEVENTH COMMAND
+
+The seventh command, INC, is like a sub-mechanism in a 
+command. This command sets XY to XY plus one. All that is 
+essential in the syntax of this command is that the first 
+four bits be [1,0,1,1]. As with other commands, there is 
+more than one way to express INC. In its case, however, 
+there are sixteen ways to express it, since Virtual Machine
+ignores the final four bits. This command is implemented 
+using the given sub-structural functions in a straight 
+forward manner. (1) XY is selected to the Address Bus, 
+which automatically increments IncrUnit, and so (2) 
+IncrUnit can be load to INC, which (3) can be selected to 
+the Address Bus, which (4) is loaded to XY. Thereby, XY is
+set to XY + 1.
+
+		THE 8th, 9th, 10th, AND 11th COMMANDS
+
+These four commands all begin with [1,1]. They are:
+
+GOTO,
+SETM,
+CALL, and
+BC.
+
+In terms of syntax they divide in two not so obvious ways. 
+One is determined by the third bit and the other is 
+determined by the eight bit. 
+
+If the third bit is 0, then the command is SETM, that is, 
+move the next 16 bits in memory to the M register. This is
+useful thing to be able to do so as to regulate the order 
+in which commands are executed. 
+
+If the third bit is 1, then the eight bit becomes relevant.
+If it is 1, then the command is CALL, which copies PC to XY.
+This is useful, again, to regulate the order in which 
+commands are executed. In this case, the present location 
+such an order is saved to XY so that RET_MOV16 can later 
+move it back to PC so as to resume code at the former 
+present location. 
+
+Now, there are two cases. In both, the third bit is 1 and 
+the eigth bit is 0. 
+
+The key bits are now the sixth and seventh. 
+
+If they are both 1, then the command is GOTO. Here, PC is
+immediately and unconditionally set to the next 16 bits. 
+Obviously, this is useful. This is interesting. GOTO is a 
+way of programming that has been denigrated for a 
+significant period of time, but here it is at the core of 
+the relay Harry and its virtual descendants. Now, this is 
+not an obviously eliminable feature. An exhaustive 
+examination of the ways in which program execution can be 
+regulated shows that it is always done by setting the 
+program counter, that is, by means of some form of GOTO.
+
+If the key sixth and seventh bits are not both 1, then the
+command is BC, Branch Conditionally. This is the most 
+syntactically complicated command. As already mentioned, 
+relay Harry, et cetera, do much besides calculating. Here 
+is one such place. BC relies on Virtual Machine to be able
+to check for four conditions. To enumerate these, recall 
+that the Virtual Machine has three states. 
+
+(1) SIGN: whether the leftmost bit of the DATABUS is 1
+(2) CARRY: whether the ADD or INC function, the other one
+	that increments B, not the register to which IncrUnit
+	can be loaded, has a carry
+(3) ZERO: whether DATABUS is zero
+
+Given these three states, four conditions can be checked.
+
+(1) whether SIGN = 1
+(2) whether CARRY = 0
+(3) whether ZER0 = 1
+(4) whether ZERO = 0
+
+BC goes to the address in the next 16 bits depending on 
+whether (1) it has been instructed to check a given 
+condition, and (2) whether that condition obtains. 
+
+The BC command looks like this:
+
+[1,1,1, S1+/-, Cy+/-, Z1+/-, Z0+/-, 0]
+
+If the fourth bit is 1, the machine will check for whether 
+SIGN is 1. 
+
+If the fifth bit is 1, the machine will check for whether 
+CARRY is 0. 
+
+If the sixth bit is 1, the machine will check for whether 
+ZERO is 1. 
+
+If the seventh bit is 1, the machine will check for whether 
+ZERO is 0. 
+
+If any of these pan out, PC will be set to the next 16 bits.
+
+The command to go to the next 16 bits, if ZERO is 1, is:
+
+[1,1,1,0,0,0,1,0]
+
+So, there you have it. The commands that can be used to 
+program Virtual Machine. All in 0s and 1s. 
+
+
+
+
